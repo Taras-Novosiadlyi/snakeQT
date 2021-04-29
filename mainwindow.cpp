@@ -12,12 +12,23 @@ MainWindow::MainWindow(QWidget *parent)
     this->setFixedSize(500, 400);
     ui->inputLineEd->setFocus();
 
-
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(countTime()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::countTime()
+{
+
+    auto end = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> time = end - startTimeCount;
+
+    ui->TimeOutput->setText(QString::number(time.count()));
 }
 
 void MainWindow::makeField(int rows, int columns)
@@ -53,7 +64,7 @@ void MainWindow::makeField(int rows, int columns)
 
 }
 
-void MainWindow::countTime(bool &runTimer)
+/*void MainWindow::countTime(bool &runTimer)
 {
     auto start = std::chrono::system_clock::now();
     auto end = std::chrono::system_clock::now();
@@ -68,29 +79,17 @@ void MainWindow::countTime(bool &runTimer)
 
         end = std::chrono::system_clock::now();
     }
-}
+}*/
 
 void MainWindow::playGame(int rows, int columns)
 {
     makeField(rows, columns);
 
-    bool runTimer = true;
-    double time = 0;
+    startTimeCount = std::chrono::system_clock::now();
 
-    std::thread thTime(
-    [&]()
-    {
-        countTime(runTimer);
-    });
+    timer->start(1);
 
-    while(true)
-    {
-        ui->TimeOutput->setText(QString::number(time));
-    }
 
-    runTimer = false;
-
-    thTime.detach();
 
 }
 
