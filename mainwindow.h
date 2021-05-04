@@ -22,7 +22,7 @@ public slots:
 
     void countTime();
     void printField();
-    int move();
+    void move();
 private slots:
     void on_action20x20_triggered();
     void makeField(int rows, int columns);

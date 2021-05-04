@@ -22,6 +22,7 @@ private:
     bool isAppleEaten();
     void snakesTail(unsigned rows, unsigned cols);
     void setChanges();
+    bool isSnakeDead();
 
 
 public:
@@ -31,6 +32,7 @@ public:
     char** copyField();
     unsigned getHeight() const {return height;}
     unsigned getWidth() const {return width;}
+    long int getScore() const {return eaten_apples;}
     void makeApple();
 
 

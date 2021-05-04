@@ -66,14 +66,15 @@ void MainWindow::makeField(int rows, int columns)
 
 
 
-    ui->gameField->horizontalHeader()->setDefaultSectionSize(5);
-    ui->gameField->verticalHeader()->setDefaultSectionSize(5);
+    ui->gameField->horizontalHeader()->setDefaultSectionSize(29);
+    ui->gameField->verticalHeader()->setDefaultSectionSize(29);
+
 
     //Set table size
-    ui->gameField->setMaximumWidth(412);
-    ui->gameField->setMinimumWidth(412);
-    ui->gameField->setMaximumHeight(222);
-    ui->gameField->setMinimumHeight(222);
+    ui->gameField->setMaximumWidth(430);
+    ui->gameField->setMinimumWidth(430);
+    ui->gameField->setMaximumHeight(300);
+    ui->gameField->setMinimumHeight(300);
     //
 
     ui->gameField->setShowGrid(false);
@@ -82,14 +83,14 @@ void MainWindow::makeField(int rows, int columns)
 
 }
 
-int MainWindow::move()
+void MainWindow::move()
 {
     game->makeApple();
     QString direction = ui->inputLineEd->text();
 
     if(direction.size() == 0)
     {
-        return 0;
+        return;
     }
 
     if(direction.size() > 1)
@@ -103,13 +104,12 @@ int MainWindow::move()
 
     if(move == '0')
     {
-        return 1;
+        movement->stop();
+        timer->stop();
+        return;
     }
 
     game->snakeMove(move);
-
-
-    return 0;
 
 }
 
@@ -123,11 +123,15 @@ void MainWindow::printField()
         {
             if(field[i][j] == '*')
             {
-                ui->gameField->item(i, j)->setBackground(Qt::red);
+                ui->gameField->item(i, j)->setBackground(Qt::black);
             }
             else if(field[i][j] == 'A')
             {
                 ui->gameField->item(i, j)->setBackground(Qt::yellow);
+            }
+            else if(field[i][j] == 'X')
+            {
+                ui->gameField->item(i, j)->setBackground(Qt::red);
             }
             else
             {
@@ -135,6 +139,7 @@ void MainWindow::printField()
             }
         }
     }
+    ui->ScoreOutput->setText(QString::number(game->getScore() - 1));
 
     delete [] field;
 }

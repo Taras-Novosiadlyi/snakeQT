@@ -65,7 +65,7 @@ bool Snake::isAppleEaten()
     }
     else
     {
-        //eaten_apples++;
+        eaten_apples++;
         return true;
     }
 
@@ -75,9 +75,9 @@ void Snake::snakesTail(unsigned rows, unsigned cols)
 {
     static unsigned int prev_score = 0;
 
-    if(eaten_apples > 0)
+    if(eaten_apples != 1)
     {
-        tailCoordinates.push_back({rows, cols});
+        tailCoordinates.push_front({rows, cols});
 
         if (prev_score < eaten_apples)
         {
@@ -86,8 +86,8 @@ void Snake::snakesTail(unsigned rows, unsigned cols)
         }
 
 
-        field[tailCoordinates.front()[0]][tailCoordinates.front()[1]] = ' ';
-        tailCoordinates.pop_front();
+        field[tailCoordinates.back()[0]][tailCoordinates.back()[1]] = ' ';
+        tailCoordinates.pop_back();
     }
     else
     {
@@ -95,6 +95,26 @@ void Snake::snakesTail(unsigned rows, unsigned cols)
         field[rows][cols] = ' ';
     }
 
+}
+
+bool Snake::isSnakeDead()
+{
+    auto iter = tailCoordinates.begin();
+    int currentX = 0, currentY = 0;
+    while(iter != tailCoordinates.end())
+    {
+        currentX = (*iter)[0];
+        currentY = (*iter)[1];
+
+        iter++;
+
+        if(currentX == (*iter)[0] && currentY == (*iter)[1])
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Snake::setChanges()
@@ -110,21 +130,6 @@ void Snake::setChanges()
             field[(*iter)[0]][(*iter)[1]] = '*';
             iter++;
         }
-
-        //log
-
-        std::ofstream log("log.txt");
-
-        for(int i = 0; i < height; i++)
-        {
-            for(int j = 0; j < width; j++)
-            {
-                log << field[i][j];
-            }
-            log << '\n';
-        }
-
-        //
     }
 
 
