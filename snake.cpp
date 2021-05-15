@@ -1,6 +1,8 @@
 #include "snake.h"
 #include <fstream>
 
+#define LOG
+
 Snake::Snake(unsigned height, unsigned width, unsigned startRow, unsigned startCol)
 {   
     eaten_apples = 0; // Тут -1 тому що після початку гри яблук не буде, і алгоритм зразу додасть до цієї змінної 1
@@ -22,6 +24,8 @@ Snake::Snake(unsigned height, unsigned width, unsigned startRow, unsigned startC
     }
     setStart(startRow, startCol);
     makeApple();
+
+    //prev_score = 0;
 }
 
 void Snake::setStart(unsigned int rows, unsigned int col)
@@ -99,20 +103,23 @@ void Snake::snakesTail(unsigned rows, unsigned cols)
 
 bool Snake::isSnakeDead()
 {
-    auto iter = tailCoordinates.begin();
-    int currentX = 0, currentY = 0;
-    while(iter != tailCoordinates.end())
+    auto iter = tailCoordinates.cbegin();
+    unsigned headCoorX = (*iter)[0], headCoorY = (*iter)[1];
+
+    iter++;
+
+    while(iter != tailCoordinates.cend())
     {
-        currentX = (*iter)[0];
-        currentY = (*iter)[1];
-
-        iter++;
-
-        if(currentX == (*iter)[0] && currentY == (*iter)[1])
+        if(headCoorX == (*iter)[0] && headCoorY == (*iter)[1])
         {
+            field[(*iter)[0]][(*iter)[1]] = 'X';
             return true;
         }
+
+        iter++;
     }
+
+
 
     return false;
 }
@@ -125,17 +132,28 @@ void Snake::setChanges()
     {
         auto iter = tailCoordinates.begin();
 
-        for (int i = 0; i < tailCoordinates.size(); i++)
+        for (unsigned i = 0; i < tailCoordinates.size(); i++)
         {
             field[(*iter)[0]][(*iter)[1]] = '*';
             iter++;
         }
     }
 
+#ifdef LOG
+    std::ofstream log("log.txt");
+    for(unsigned i = 0; i < height; i++)
+    {
+        for(unsigned j = 0; j < width; j++)
+        {
+            log << field[i][j];
+        }
+    }
+    log.close();
+#endif
 
 }
 
-void Snake::snakeMove(char &movement)
+int Snake::snakeMove(char &movement)
 {
     // Відбувається проста перевірка на те, який символ був введений
     if (tolower(movement) == 'w')
@@ -193,7 +211,14 @@ void Snake::snakeMove(char &movement)
         }
     }
 
+    if(isSnakeDead())
+    {
+        return 1;
+    }
+
     setChanges();
+
+    return 0;
 }
 
 void Snake::makeApple()

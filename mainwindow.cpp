@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <chrono>
 #include <thread>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer = new QTimer(this);
     movement = new QTimer(this);
+
     connect(timer, SIGNAL(timeout()), this, SLOT(countTime()));
     connect(timer, SIGNAL(timeout()), this, SLOT(printField()));
     connect(movement, SIGNAL(timeout()), this, SLOT(move()));
@@ -109,7 +111,17 @@ void MainWindow::move()
         return;
     }
 
-    game->snakeMove(move);
+    if(game->snakeMove(move))
+    {
+        printField();
+
+        timer->stop();
+        movement->stop();
+
+        QMessageBox::about(this, "", "Game Over");
+
+        delete game;
+    }
 
 }
 
@@ -123,7 +135,15 @@ void MainWindow::printField()
         {
             if(field[i][j] == '*')
             {
-                ui->gameField->item(i, j)->setBackground(Qt::black);
+                if(game->getHeadX() == i && game->getHeadY() == j)
+                {
+                    ui->gameField->item(i, j)->setBackground(Qt::blue);
+                }
+                else
+                {
+                    ui->gameField->item(i, j)->setBackground(Qt::black);
+                }
+
             }
             else if(field[i][j] == 'A')
             {
