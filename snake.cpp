@@ -25,7 +25,7 @@ Snake::Snake(unsigned height, unsigned width, unsigned startRow, unsigned startC
     setStart(startRow, startCol);
     makeApple();
 
-    //prev_score = 0;
+    prev_score = 0;
 }
 
 void Snake::setStart(unsigned int rows, unsigned int col)
@@ -77,7 +77,7 @@ bool Snake::isAppleEaten()
 
 void Snake::snakesTail(unsigned rows, unsigned cols)
 {
-    static unsigned int prev_score = 0;
+    //static unsigned int prev_score = 0;
 
     if(eaten_apples != 1)
     {

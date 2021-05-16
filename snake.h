@@ -10,7 +10,7 @@ class Snake
 {
 private:
     char **field;
-    //unsigned prev_score;
+    unsigned prev_score;
 
     unsigned height, width;
     unsigned apple_coor_x, apple_coor_y;

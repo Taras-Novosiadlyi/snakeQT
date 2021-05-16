@@ -129,9 +129,11 @@ void MainWindow::printField()
 {
     char **field = game->copyField();
 
-    for(unsigned i = 0; i < game->getHeight(); i++)
+    unsigned i = 0;
+    unsigned j = 0;
+    for(; i < game->getHeight(); i++)
     {
-        for (unsigned j = 0; j < game->getWidth() ; j++)
+        for (; j < game->getWidth() ; j++)
         {
             if(field[i][j] == '*')
             {
@@ -158,6 +160,7 @@ void MainWindow::printField()
                 ui->gameField->item(i, j)->setBackground(Qt::green);
             }
         }
+        j = 0;
     }
     ui->ScoreOutput->setText(QString::number(game->getScore() - 1));
 
